@@ -1,11 +1,11 @@
 //
-// Align sample to host with Bowtie2
+// Align sample to ref with Bowtie2
 //
 include { BAM_SORT_STATS_SAMTOOLS } from '../../modules/bam_sort_stats_samtools'
-include { BOWTIE2_ALIGN  as  ALIGN_2_HOST_BOWTIE2        } from '../../modules/bowtie2_align'
+include { BOWTIE2_ALIGN as ALIGN_2_REF_BOWTIE2   } from '../../modules/bowtie2_align'
 
 
-workflow HOST_ALIGN_BOWTIE2 {
+workflow REF_ALIGN_BOWTIE2 {
     take:
     ch_reads          // channel: [ val(meta), [ reads ] ]
     ch_index          // channel: /path/to/bowtie2/index/
@@ -20,8 +20,8 @@ workflow HOST_ALIGN_BOWTIE2 {
     //
     // Map reads with Bowtie2
     //
-    ALIGN_2_HOST_BOWTIE2 ( ch_reads, ch_index, save_unaligned, sort_bam)
-    ch_versions = ch_versions.mix(ALIGN_2_HOST_BOWTIE2.out.versions.first())
+    ALIGN_2_REF_BOWTIE2 ( ch_reads, ch_index, save_unaligned, sort_bam)
+    ch_versions = ch_versions.mix(ALIGN_2_REF_BOWTIE2.out.versions.first())
 
     //
     // Sort, index BAM file and run samtools stats, flagstat and idxstats
@@ -31,9 +31,9 @@ workflow HOST_ALIGN_BOWTIE2 {
     //ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
     emit:
-    bam             = ALIGN_2_HOST_BOWTIE2.out.bam          // channel: [ val(meta), bam   ]
-    logs            = ALIGN_2_HOST_BOWTIE2.out.log          // channel: [ val(meta), log   ]
-    fastq           = ALIGN_2_HOST_BOWTIE2.out.fastq        // channel: [ val(meta), fastq ]
+    bam             = ALIGN_2_REF_BOWTIE2.out.bam          // channel: [ val(meta), bam   ]
+    logs            = ALIGN_2_REF_BOWTIE2.out.log          // channel: [ val(meta), log   ]
+    fastq           = ALIGN_2_REF_BOWTIE2.out.fastq        // channel: [ val(meta), fastq ]
 
     //bam              = BAM_SORT_STATS_SAMTOOLS.out.bam      // channel: [ val(meta), [ bam ] ]
     //bai              = BAM_SORT_STATS_SAMTOOLS.out.bai      // channel: [ val(meta), [ bai ] ]

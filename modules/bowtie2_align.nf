@@ -16,7 +16,7 @@ process BOWTIE2_ALIGN {
     output:
     tuple val(meta), path("*.{bam,sam}"), emit: bam
     tuple val(meta), path("*.log")      , emit: logs
-    tuple val(meta), path("*fastq.gz")  , emit: fastq, optional:true
+    tuple val(meta), path("*fastq.gz")  , emit: fastq, optional: true
     path  "versions.yml"                , emit: versions
 
     when:

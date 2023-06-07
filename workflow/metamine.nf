@@ -10,9 +10,11 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
 
-include {ALIGN_2_HOST_BOWTIE2} from '../subworkflows/bowtie2/align_sample2host'
-include {INPUT_CHECK} from '../modules/input_check'
-include {GENOME_HOST} from '../subworkflows/bowtie2/index-host'
+include {    HOST_ALIGN_BOWTIE2        } from '../subworkflows/bowtie2/align_sample2host'
+include {    REF_ALIGN_BOWTIE2         } from '../subworkflows/bowtie2/align_sample2ref'
+include {    INPUT_CHECK                                  } from '../modules/input_check'
+include {    GENOME_HOST                                  } from '../subworkflows/bowtie2/index-host'
+include {    GENOME_REF                                   } from '../subworkflows/bowtie2/index-ref'
 
 workflow METAMINE {
 
@@ -23,27 +25,37 @@ workflow METAMINE {
     //ch_bowtie2_multiqc          = Channel.empty()
     //ch_bowtie2_flagstat_multiqc = Channel.empty()
 
-    INPUT_CHECK (
-        ch_input
-    )
+    INPUT_CHECK (ch_input)
     ch_input_check = INPUT_CHECK.out.reads
-
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     GENOME_HOST ()
     ch_versions = ch_versions.mix(GENOME_HOST.out.versions)
 
-    ALIGN_2_HOST_BOWTIE2 (
+    GENOME_REF ()
+    ch_versions = ch_versions.mix(GENOME_REF.out.versions)
+
+    HOST_ALIGN_BOWTIE2 (
             ch_input_check,
             GENOME_HOST.out.bowtie2_index,
             params.save_unaligned,
             params.sort_bam,
             GENOME_HOST.out.genome_host
         )
-
-
-        ch_versions                 = ch_versions.mix(ALIGN_2_HOST_BOWTIE2.out.versions)
-    }
+    ch_versions = ch_versions.mix(HOST_ALIGN_BOWTIE2.out.versions)
+    
+    ch_meta = HOST_ALIGN_BOWTIE2.out.fastq
+    
+    REF_ALIGN_BOWTIE2 (
+            ch_meta,
+            GENOME_REF.out.bowtie2_index,
+            params.save_unaligned,
+            params.sort_bam,
+            GENOME_REF.out.genome_ref
+        )
+        
+    ch_versions  = ch_versions.mix(REF_ALIGN_BOWTIE2.out.versions)
+}
     
 
 

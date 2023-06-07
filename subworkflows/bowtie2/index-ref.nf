@@ -34,8 +34,6 @@ workflow GENOME_REF {
         }
     }
 
-    ch_bowtie2_index = Channel.empty()
-
     ch_genome_ref = Channel.value(file(params.genome_ref))
     
     BOWTIE2_REF_IDX (
@@ -48,7 +46,7 @@ workflow GENOME_REF {
     emit:
     genome_ref           = ch_genome_ref           // path: genome.genome_ref
     gff_ref              = ch_gff_ref              // path: genome.gff_ref
-    bowtie2_index        = ch_bowtie2_index        // path: bowtie2/index/
+    bowtie2_index        = ch_bt2_index        // path: bowtie2/index/
 
     versions             = ch_versions             // channel: [ versions.yml ]
 }
