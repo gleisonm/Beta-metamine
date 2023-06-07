@@ -1,0 +1,2 @@
+sample,single_end,fastq_1,fastq_2
+Amostra1,False,/home/gleison/Documentos/nf-project/Beta-metamine/data-test/sample/1-Cas9cepaGAmosta1_S5_L001_R1_001.fastq.gz,/home/gleison/Documentos/nf-project/Beta-metamine/data-test/sample/1-Cas9cepaGAmosta1_S5_L001_R2_001.fastq.gz
