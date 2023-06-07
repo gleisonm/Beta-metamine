@@ -22,7 +22,7 @@ workflow REF_ALIGN_BOWTIE2 {
     //
     ALIGN_2_REF_BOWTIE2 ( ch_reads, ch_index, save_unaligned, sort_bam)
     ch_versions = ch_versions.mix(ALIGN_2_REF_BOWTIE2.out.versions.first())
-
+    
     //
     // Sort, index BAM file and run samtools stats, flagstat and idxstats
     //

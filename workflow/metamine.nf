@@ -54,6 +54,8 @@ workflow METAMINE {
             GENOME_REF.out.genome_ref
         )
         
+    ch_teste = REF_ALIGN_BOWTIE2.out.fastq
+    ch_teste.dump(tag: 'meta')    
     ch_versions  = ch_versions.mix(REF_ALIGN_BOWTIE2.out.versions)
 }
     
